@@ -16,6 +16,7 @@ import com.applaudostudio.panicbutton.extras.database
 import com.applaudostudio.panicbutton.model.ContactDBModel
 import com.applaudostudio.panicbutton.model.ContactModel
 import kotlinx.android.synthetic.main.fragment_agenda_list.*
+import org.jetbrains.anko.db.insert
 import org.jetbrains.anko.toast
 
 
@@ -143,8 +144,11 @@ class AgendaListFragment : Fragment(), ContactListAdapter.ItemInteractions {
 
     override fun ContactClickListener(item: ContactModel) {
         context?.toast("Agregado a lista de contactos")
-        val db = context?.database?.writableDatabase
-        
+       val db = context?.database?.writableDatabase//writeableDataBase
+        db?.insert(ContactDBModel.TABLENAME,
+                ContactDBModel.COLUMN_NAME to item.name,
+                        ContactDBModel.COLUMN_PHONE to item.phone
+                )
 
 
     }
