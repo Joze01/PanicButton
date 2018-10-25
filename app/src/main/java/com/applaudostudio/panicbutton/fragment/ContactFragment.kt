@@ -21,6 +21,11 @@ import android.telephony.SmsManager
 import android.util.Log
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import kotlinx.android.synthetic.main.fragment_agenda_list.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.design.snackbar
+import org.jetbrains.anko.noButton
+import org.jetbrains.anko.yesButton
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -92,7 +97,13 @@ class ContactFragment : Fragment(), ContactListAdapter.ItemInteractions, View.On
                     Log.e("LAT,LONG ======>", location?.latitude.toString() + "," + location?.longitude.toString())
                     coordenates = location?.latitude.toString()
                     coordenates += ",${location?.longitude.toString()}"
+                    var notify:Boolean=false
                     for (item in contactList) {
+                        if(!notify){
+                            context?.alert("Se ha notificado a sus contactos de seguridad ") {
+                            }?.show()
+                            notify=true
+                        }
                         val sms = SmsManager.getDefault()
                         sms.sendTextMessage(item.phone, null, "Estoy en problemas necesito ayuda: http://maps.google.com/maps?q=$coordenates&z=17", null, null);
                     }
@@ -159,6 +170,7 @@ class ContactFragment : Fragment(), ContactListAdapter.ItemInteractions, View.On
         when (p0) {
             floatingActionButtonSend -> {
                getLocation()
+
             }
         }
 
@@ -166,6 +178,20 @@ class ContactFragment : Fragment(), ContactListAdapter.ItemInteractions, View.On
 
 
     override fun ContactClickListener(item: ContactModel) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        context?.alert("Esta Seguro que desea quitar este contacto de seguridad?") {
+            yesButton {
+                context?.database?.use{
+                    transaction {
+                        delete(ContactDBModel.TABLENAME,ContactDBModel.COLUMN_NAME+"=?", arrayOf(item.name))
+                    }
+                    contactList.remove(item)
+                    contactAdapter.setData(contactList)
+                    contactAdapter.notifyDataSetChanged()
+                    view?.snackbar("Borrado Exitosamente")
+                }
+            }
+            noButton {}
+        }?.show()
+
     }
 }

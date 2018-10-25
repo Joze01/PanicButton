@@ -21,7 +21,7 @@ class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "MyDatab
     override fun onCreate(db: SQLiteDatabase) {
         // Here you create tables
         db.createTable(ContactDBModel.TABLENAME, true,
-                ContactDBModel.COLUMN_NAME to TEXT,
+                ContactDBModel.COLUMN_NAME to TEXT + UNIQUE,
                 ContactDBModel.COLUMN_PHONE to TEXT)
     }
 
