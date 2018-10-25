@@ -12,7 +12,6 @@ import com.applaudostudio.panicbutton.persistence.MyDatabaseOpenHelper
 inline fun FragmentManager.initFragmentTran(func: FragmentTransaction.() -> Unit) {
     val fragmentTransaction = beginTransaction()
     fragmentTransaction.func()
-    fragmentTransaction.addToBackStack(null)
     fragmentTransaction.commit()
 }
 

@@ -37,8 +37,7 @@ private const val ARG_PARAM2 = "param2"
 class AgendaListFragment : Fragment(), ContactListAdapter.ItemInteractions {
 
 
-    var resultList: MutableList<ContactModel> = mutableListOf()
-    var contactAdapter:ContactListAdapter= ContactListAdapter(mutableListOf(),this)
+    var contactAdapter: ContactListAdapter = ContactListAdapter(mutableListOf(), this)
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -62,9 +61,8 @@ class AgendaListFragment : Fragment(), ContactListAdapter.ItemInteractions {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         contactAdapter.setData(mutableListOf())
-        recyclerContacts.layoutManager= LinearLayoutManager(getActivity())
-        recyclerContacts.adapter=contactAdapter
-        getContacts()
+        recyclerContacts.layoutManager = LinearLayoutManager(getActivity())
+        recyclerContacts.adapter = contactAdapter
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -72,11 +70,18 @@ class AgendaListFragment : Fragment(), ContactListAdapter.ItemInteractions {
         listener?.onFragmentInteraction(uri)
     }
 
+    override fun onResume() {
+        super.onResume()
+        getContacts()
+
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnFragmentInteractionListener) {
             listener = context
         } else {
+            Log.e("DATA=====>", "HOLA")
             throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
         }
     }
@@ -122,18 +127,13 @@ class AgendaListFragment : Fragment(), ContactListAdapter.ItemInteractions {
                 }
     }
 
-
-
-
     private fun getContacts() {
         if (activity != null) {
-            val phones = activity!!.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, arrayOf("display_name","data1"), null, null, "display_name")
+            val phones = activity!!.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, arrayOf("display_name", "data1"), null, null, "display_name")
             while (phones.moveToNext()) {
                 val name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
                 val phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-                var contactModel= ContactModel()
-                contactModel.name=name
-                contactModel.phone=phoneNumber
+                var contactModel = ContactModel(name,phoneNumber)
                 contactList.add(contactModel)
                 contactAdapter.setData(contactList)
                 contactAdapter.notifyDataSetChanged()
@@ -144,16 +144,12 @@ class AgendaListFragment : Fragment(), ContactListAdapter.ItemInteractions {
 
     override fun ContactClickListener(item: ContactModel) {
         context?.toast("Agregado a lista de contactos")
-       val db = context?.database?.writableDatabase//writeableDataBase
+        val db = context?.database?.writableDatabase//writeableDataBase
         db?.insert(ContactDBModel.TABLENAME,
                 ContactDBModel.COLUMN_NAME to item.name,
-                        ContactDBModel.COLUMN_PHONE to item.phone
-                )
-
-
+                ContactDBModel.COLUMN_PHONE to item.phone
+        )
     }
-
-
 
 
 }

@@ -28,7 +28,8 @@ import org.jetbrains.anko.toast
 class MainActivity : AppCompatActivity(), ContactFragment.OnFragmentInteractionListener, View.OnClickListener {
 
     var securityContacts: MutableList<ContactModel> = mutableListOf()
-
+    var latitude:String=""
+    var longitude:String=""
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         startActivity<AgendaListActivity>()
         return super.onOptionsItemSelected(item)
@@ -38,15 +39,24 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnFragmentInteractionL
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        getLocation()
+        //getLocation()
+
         setSupportActionBar(mainToolbar)
+
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.settings_menu, menu)
+        return true
+    }
+
+    override fun onResume() {
+        super.onResume()
         Dexter.withActivity(this)
                 .withPermissions(
                         Manifest.permission.READ_CONTACTS,
@@ -55,7 +65,7 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnFragmentInteractionL
                 ).withListener(object : MultiplePermissionsListener {
                     override fun onPermissionsChecked(report: MultiplePermissionsReport) {
                         if (report.areAllPermissionsGranted()) {
-                            val fragmentList: ContactFragment = ContactFragment.newInstance("Abstract Adapter", "Param2");
+                            val fragmentList: ContactFragment = ContactFragment.newInstance("");
                             replaceFragment(fragmentList, R.id.fragmentContainer)
 
                         } else {
@@ -70,11 +80,6 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnFragmentInteractionL
                 }).check()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.settings_menu, menu)
-        return true
-    }
-
 
     override fun onClick(p0: View?) {
         when (p0) {
@@ -83,11 +88,10 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnFragmentInteractionL
     }
 
 
-
+/*
      @SuppressLint("MissingPermission")
     fun getLocation():String{
-         var latitude:String=""
-         var longitude:String=""
+
         fusedLocationClient.lastLocation
                 .addOnSuccessListener { location: Location? ->
                     Log.e("LAT,LONG ======>",location?.latitude.toString()+","+location?.longitude.toString())
@@ -96,5 +100,6 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnFragmentInteractionL
                 }
          return "$latitude,$longitude"
     }
+    */
 
 }

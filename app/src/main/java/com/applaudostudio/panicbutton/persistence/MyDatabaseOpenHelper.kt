@@ -12,7 +12,7 @@ class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "MyDatab
         @Synchronized
         fun getInstance(ctx: Context): MyDatabaseOpenHelper {
             if (instance == null) {
-                instance = MyDatabaseOpenHelper(ctx.getApplicationContext())
+                instance = MyDatabaseOpenHelper(ctx.applicationContext)
             }
             return instance!!
         }
@@ -21,7 +21,6 @@ class MyDatabaseOpenHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "MyDatab
     override fun onCreate(db: SQLiteDatabase) {
         // Here you create tables
         db.createTable(ContactDBModel.TABLENAME, true,
-                ContactDBModel.COLUMN_ID to INTEGER + PRIMARY_KEY + UNIQUE + AUTOINCREMENT,
                 ContactDBModel.COLUMN_NAME to TEXT,
                 ContactDBModel.COLUMN_PHONE to TEXT)
     }

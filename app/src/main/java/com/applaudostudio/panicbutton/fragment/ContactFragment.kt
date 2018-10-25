@@ -1,19 +1,33 @@
 package com.applaudostudio.panicbutton.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.applaudostudio.panicbutton.R
+import com.applaudostudio.panicbutton.adapter.ContactListAdapter
+import com.applaudostudio.panicbutton.extras.database
+import com.applaudostudio.panicbutton.model.ContactDBModel
+import com.applaudostudio.panicbutton.model.ContactModel
+import kotlinx.android.synthetic.main.fragment_list.*
+import org.jetbrains.anko.db.*
+import android.telephony.SmsManager
+import android.util.Log
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val ARG_LAT = "param1"
+private const val ARG_LON = "param2"
+
 
 /**
  * A simple [Fragment] subclass.
@@ -24,16 +38,19 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  *
  */
-class ContactFragment : Fragment() {
-    private var param1: String? = null
-    private var param2: String? = null
+class ContactFragment : Fragment(), ContactListAdapter.ItemInteractions, View.OnClickListener {
+
+
+    private var contactList: MutableList<ContactModel> = mutableListOf()
+    var contactAdapter: ContactListAdapter = ContactListAdapter(mutableListOf(), this)
+    private var coordenates: String? = null
+    private var lon: String? = null
     private var listener: OnFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            coordenates = it.getString(ARG_LAT)
         }
     }
 
@@ -55,6 +72,33 @@ class ContactFragment : Fragment() {
         } else {
             throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
         }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        floatingActionButtonSend.setOnClickListener(this)
+        contactAdapter.setData(mutableListOf())
+        securityListRecycler.layoutManager = LinearLayoutManager(getActivity())
+        securityListRecycler.adapter = contactAdapter
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context!!)
+
+        loadData()
+    }
+
+    @SuppressLint("MissingPermission")
+    fun getLocation(): String? {
+        fusedLocationClient.lastLocation
+                .addOnSuccessListener { location: Location? ->
+                    Log.e("LAT,LONG ======>", location?.latitude.toString() + "," + location?.longitude.toString())
+                    coordenates = location?.latitude.toString()
+                    coordenates += ",${location?.longitude.toString()}"
+                    for (item in contactList) {
+                        val sms = SmsManager.getDefault()
+                        sms.sendTextMessage(item.phone, null, "Estoy en problemas necesito ayuda: http://maps.google.com/maps?q=$coordenates&z=17", null, null);
+                    }
+                }
+
+        return coordenates
     }
 
     override fun onDetach() {
@@ -89,12 +133,39 @@ class ContactFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(param1: String) =
                 ContactFragment().apply {
                     arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                        putString(ARG_PARAM2, param2)
+                        putString(ARG_LAT, param1)
                     }
                 }
+    }
+
+
+    fun loadData() {
+        context?.database?.use {
+            select(ContactDBModel.TABLENAME, ContactDBModel.COLUMN_NAME, ContactDBModel.COLUMN_PHONE).exec {
+                contactList.addAll(parseList<ContactModel>(classParser()))
+                contactAdapter.setData(contactList)
+                securityListRecycler.layoutManager = LinearLayoutManager(getActivity())
+                securityListRecycler.adapter = contactAdapter
+            }
+        }
+    }
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    override fun onClick(p0: View?) {
+        when (p0) {
+            floatingActionButtonSend -> {
+               getLocation()
+            }
+        }
+
+    }
+
+
+    override fun ContactClickListener(item: ContactModel) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
