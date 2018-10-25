@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Panic Button</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="contact_name">Contact Name</string>
+    <string name="contact_phone_number">2222-2222</string>
+    <string name="permissionRequest">La aplicacion necesita su permiso para leer de los contactos y enviar mensajes de texto</string>
+    <string name="securityContact">Agregar Contactos de seguridad</string>
+</resources>
