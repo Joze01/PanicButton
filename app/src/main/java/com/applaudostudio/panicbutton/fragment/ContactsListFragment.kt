@@ -15,7 +15,7 @@ import com.applaudostudio.panicbutton.adapter.ContactListAdapter
 import com.applaudostudio.panicbutton.extras.database
 import com.applaudostudio.panicbutton.model.ContactDBModel
 import com.applaudostudio.panicbutton.model.ContactModel
-import kotlinx.android.synthetic.main.fragment_agenda_list.*
+import kotlinx.android.synthetic.main.fragment_contacts_list.*
 import org.jetbrains.anko.db.insert
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.toast
@@ -56,7 +56,7 @@ class AgendaListFragment : Fragment(), ContactListAdapter.ItemInteractions {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_agenda_list, container, false)
+        return inflater.inflate(R.layout.fragment_contacts_list, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -15,11 +15,6 @@ import org.jetbrains.anko.startActivity
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import android.annotation.SuppressLint
-import android.location.Location
-import android.util.Log
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.listener.PermissionRequest
 import org.jetbrains.anko.toast
@@ -31,7 +26,7 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnFragmentInteractionL
     var latitude:String=""
     var longitude:String=""
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        startActivity<AgendaListActivity>()
+        startActivity<ContactsListActivity>()
         return super.onOptionsItemSelected(item)
     }
 

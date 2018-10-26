@@ -21,7 +21,7 @@ import android.telephony.SmsManager
 import android.util.Log
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import kotlinx.android.synthetic.main.fragment_agenda_list.*
+import kotlinx.android.synthetic.main.fragment_contacts_list.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.noButton

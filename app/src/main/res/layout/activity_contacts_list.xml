@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:id="@+id/contactsContainer"
     android:layout_height="match_parent"
-    tools:context=".AgendaListActivity">
+    tools:context=".ContactsListActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/mainToolbar"
