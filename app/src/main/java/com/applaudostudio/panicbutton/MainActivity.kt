@@ -61,7 +61,8 @@ class MainActivity : AppCompatActivity(), ContactFragment.OnFragmentInteractionL
                 .withPermissions(
                         Manifest.permission.READ_CONTACTS,
                         Manifest.permission.SEND_SMS,
-                        Manifest.permission.ACCESS_FINE_LOCATION
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.INTERNET
                 ).withListener(object : MultiplePermissionsListener {
                     override fun onPermissionsChecked(report: MultiplePermissionsReport) {
                         if (report.areAllPermissionsGranted()) {
